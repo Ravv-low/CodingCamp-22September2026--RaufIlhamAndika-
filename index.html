@@ -5,50 +5,42 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Expense & Budget Visualizer</title>
   <link rel="stylesheet" href="style.css">
-  <!-- CDN Chart.js untuk membuat grafik -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-
   <div class="container">
-    <h1>Expense & Budget Visualizer</h1>
+    <header>
+      <h1>Expense & Budget Visualizer</h1>
+      <button id="theme-toggle" class="btn-theme">🌙 Dark Mode</button>
+    </header>
 
-    <!-- 1. Total Balance -->
-    <div class="balance-card">
-      <h2>Total Pengeluaran:</h2>
+    <div class="total-card">
+      <h2>Total Pengeluaran</h2>
       <p id="total-balance">Rp 0</p>
     </div>
 
-    <div class="main-content">
-      <!-- 2. Form Input Transaksi -->
+    <div class="grid">
       <div class="card">
         <h3>Tambah Transaksi</h3>
         <form id="expense-form">
-          <div class="form-group">
-            <label for="item-name">Nama Barang / Transaksi</label>
-            <input type="text" id="item-name" placeholder="Misal: Nasi Goreng" required>
-          </div>
+          <label for="item-name">Nama Barang / Transaksi</label>
+          <input type="text" id="item-name" placeholder="Misal: Nasi Goreng" required>
 
-          <div class="form-group">
-            <label for="item-amount">Jumlah (Rp)</label>
-            <input type="number" id="item-amount" placeholder="Misal: 20000" min="1" required>
-          </div>
+          <label for="item-amount">Jumlah (Rp)</label>
+          <input type="number" id="item-amount" placeholder="Misal: 20000" required>
 
-          <div class="form-group">
-            <label for="item-category">Kategori</label>
-            <select id="item-category" required>
-              <option value="" disabled selected>Pilih Kategori</option>
-              <option value="Food">Food</option>
-              <option value="Transport">Transport</option>
-              <option value="Fun">Fun</option>
-            </select>
-          </div>
+          <label for="item-category">Kategori</label>
+          <select id="item-category" required>
+            <option value="">Pilih Kategori</option>
+            <option value="Food">Food</option>
+            <option value="Transport">Transport</option>
+            <option value="Fun">Fun</option>
+          </select>
 
-          <button type="submit" id="btn-submit">Tambah</button>
+          <button type="submit" class="btn-submit">Tambah</button>
         </form>
       </div>
 
-      <!-- 3. Visual Chart -->
       <div class="card">
         <h3>Persentase Pengeluaran</h3>
         <div class="chart-container">
@@ -57,24 +49,30 @@
       </div>
     </div>
 
-    <!-- 4. Daftar Transaksi -->
-    <div class="card margin-top">
-      <h3>Daftar Transaksi</h3>
-      <div class="table-scroll">
-        <table id="transaction-table">
-          <thead>
-            <tr>
-              <th>Nama</th>
-              <th>Nominal</th>
-              <th>Kategori</th>
-              <th>Aksi</th>
-            </tr>
-          </thead>
-          <tbody id="transaction-list">
-            <!-- Data transaksi akan muncul di sini via JavaScript -->
-          </tbody>
-        </table>
+    <div class="card list-card">
+      <div class="list-header">
+        <h3>Daftar Transaksi</h3>
+        <div class="sort-container">
+          <label for="sort-select">Urutkan: </label>
+          <select id="sort-select">
+            <option value="default">Default</option>
+            <option value="high-low">Nominal Terbesar</option>
+            <option value="low-high">Nominal Terkecil</option>
+          </select>
+        </div>
       </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Nama</th>
+            <th>Nominal</th>
+            <th>Kategori</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="transaction-list"></tbody>
+      </table>
     </div>
   </div>
 
