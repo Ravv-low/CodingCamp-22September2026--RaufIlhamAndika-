@@ -1,4 +1,3 @@
-// Array penampung transaksi
 let transactions = [];
 
 // Elemen DOM
@@ -8,8 +7,10 @@ const itemAmountInput = document.getElementById('item-amount');
 const itemCategoryInput = document.getElementById('item-category');
 const transactionList = document.getElementById('transaction-list');
 const totalBalanceEl = document.getElementById('total-balance');
+const themeToggleBtn = document.getElementById('theme-toggle');
+const sortSelect = document.getElementById('sort-select');
 
-// Inisialisasi Chart.js
+// Chart.js
 const ctx = document.getElementById('expense-chart').getContext('2d');
 let expenseChart = new Chart(ctx, {
   type: 'pie',
@@ -26,7 +27,14 @@ let expenseChart = new Chart(ctx, {
   }
 });
 
-// Event listener saat form disubmit
+// Optional Challenge 5: Dark/Light Mode
+themeToggleBtn.addEventListener('click', () => {
+  document.body.classList.toggle('dark-mode');
+  const isDark = document.body.classList.contains('dark-mode');
+  themeToggleBtn.innerText = isDark ? '☀️ Light Mode' : '🌙 Dark Mode';
+});
+
+// Event Listener Form
 form.addEventListener('submit', function (e) {
   e.preventDefault();
 
@@ -34,7 +42,6 @@ form.addEventListener('submit', function (e) {
   const amount = parseFloat(itemAmountInput.value);
   const category = itemCategoryInput.value;
 
-  // Validasi sederhana
   if (!name || isNaN(amount) || !category) {
     alert('Harap isi semua kolom dengan benar!');
     return;
@@ -52,25 +59,43 @@ form.addEventListener('submit', function (e) {
   form.reset();
 });
 
-// Fungsi untuk menghapus transaksi berdasarkan ID
+// Optional Challenge 3: Sort Transactions
+sortSelect.addEventListener('change', () => {
+  updateUI();
+});
+
 function deleteTransaction(id) {
   transactions = transactions.filter(t => t.id !== id);
   updateUI();
 }
 
-// Fungsi utama memperbarui tampilan
 function updateUI() {
   renderList();
   renderBalance();
   renderChart();
 }
 
-// 1. Render Tabel Transaksi
 function renderList() {
   transactionList.innerHTML = '';
 
-  transactions.forEach(t => {
+  // Buat copy array untuk pengurutan
+  let displayData = [...transactions];
+  const sortValue = sortSelect.value;
+
+  if (sortValue === 'high-low') {
+    displayData.sort((a, b) => b.amount - a.amount);
+  } else if (sortValue === 'low-high') {
+    displayData.sort((a, b) => a.amount - b.amount);
+  }
+
+  displayData.forEach(t => {
     const tr = document.createElement('tr');
+    
+    // Optional Challenge 4: Highlight Spending (> Rp 100.000)
+    if (t.amount > 100000) {
+      tr.classList.add('highlight-high');
+    }
+
     tr.innerHTML = `
       <td>${t.name}</td>
       <td>Rp ${t.amount.toLocaleString('id-ID')}</td>
@@ -81,13 +106,11 @@ function renderList() {
   });
 }
 
-// 2. Render Total Pengeluaran
 function renderBalance() {
   const total = transactions.reduce((sum, t) => sum + t.amount, 0);
   totalBalanceEl.innerText = `Rp ${total.toLocaleString('id-ID')}`;
 }
 
-// 3. Render Grafik Kategori
 function renderChart() {
   const categoryTotals = { Food: 0, Transport: 0, Fun: 0 };
 
